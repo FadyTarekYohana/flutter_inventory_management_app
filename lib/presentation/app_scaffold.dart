@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,20 +32,27 @@ class AppScaffold extends StatelessWidget {
                   title: const Text("Users"),
                   onTap: () => context.go("/users"),
                 ),
-                ListTile(
-                  title: const Text("Login"),
-                  onTap: () => context.go("/Login"),
-                ),
-                ListTile(
-                  title: const Text("Logout"),
-                  onTap: () => context.go("/Logout"),
+                Visibility(
+                  replacement: ListTile(
+                    title: const Text("Login"),
+                    onTap: () => context.go("/login"),
+                  ),
+                  visible: FirebaseAuth.instance.currentUser != null,
+                  child: ListTile(
+                    title: const Text("Logout"),
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      context.go("/");
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         ),
         appBar: AppBar(
-          title: const Text("Inventory Manager"),
+          title: Text(
+              "hello ${FirebaseAuth.instance.currentUser?.phoneNumber ?? 'guest'}"),
         ),
         body: Center(
           child: child,

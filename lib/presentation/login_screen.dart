@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
+import 'package:inventory_management_app/util/dbTools.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +11,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController phoneController = TextEditingController(text: "+20");
 
   @override
@@ -41,15 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
               onPressed: () async {
-                await auth.verifyPhoneNumber(
-                  phoneNumber: phoneController.text,
-                  verificationCompleted:
-                      (PhoneAuthCredential credential) async {},
-                  verificationFailed: (FirebaseAuthException e) async {},
-                  codeSent: (String verificationId, int? resendToken) async {},
-                  codeAutoRetrievalTimeout: (String verificationId) async {},
-                );
-                GoRouter.of(context).go('/otp');
+                if (await checkIfDocExists('users', phoneController.text)) {
+                  GoRouter.of(context).go('/otp', extra: phoneController.text);
+                } else {}
               },
               child: const Text("Login")),
         )

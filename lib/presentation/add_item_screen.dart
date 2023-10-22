@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -74,24 +75,26 @@ class _AddItemScreenState extends State<AddItemScreen> {
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton.icon(
               onPressed: () async {
-                ImagePicker imagePicker = ImagePicker();
-                XFile? file =
-                    await imagePicker.pickImage(source: ImageSource.gallery);
+                if (key.currentState!.validate()) {
+                  ImagePicker imagePicker = ImagePicker();
+                  XFile? file =
+                      await imagePicker.pickImage(source: ImageSource.gallery);
 
-                if (file == null) return;
+                  if (file == null) return;
 
-                String uniqueFileName =
-                    DateTime.now().millisecondsSinceEpoch.toString();
+                  String uniqueFileName =
+                      DateTime.now().millisecondsSinceEpoch.toString();
 
-                Reference referenceRoot = FirebaseStorage.instance.ref();
-                Reference referenceDirImages = referenceRoot.child('images');
-                Reference referenceImageToUpload =
-                    referenceDirImages.child(uniqueFileName);
+                  Reference referenceRoot = FirebaseStorage.instance.ref();
+                  Reference referenceDirImages = referenceRoot.child('images');
+                  Reference referenceImageToUpload =
+                      referenceDirImages.child(uniqueFileName);
 
-                try {
-                  await referenceImageToUpload.putFile(File(file.path));
-                  imageUrl = await referenceImageToUpload.getDownloadURL();
-                } catch (e) {}
+                  try {
+                    await referenceImageToUpload.putFile(File(file.path));
+                    imageUrl = await referenceImageToUpload.getDownloadURL();
+                  } catch (e) {}
+                }
               },
               icon: const Icon(Icons.image),
               label: const Text("Add Image"),
@@ -99,6 +102,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
+                if (imageUrl.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please upload an image')));
+
+                  return;
+                }
                 if (key.currentState!.validate()) {
                   String itemName = nameController.text;
                   String itemQuantity = quantityController.text;
@@ -107,7 +116,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   Map<String, String> dataToSend = {
                     'name': itemName,
                     'quantity': itemQuantity,
-                    'notes': itemNotes
+                    'notes': itemNotes,
+                    'image': imageUrl,
+                    'owner':
+                        FirebaseAuth.instance.currentUser?.phoneNumber ?? ''
                   };
 
                   try {

@@ -33,7 +33,9 @@ class HomeScreen extends StatelessWidget {
                           'id': e.id,
                           'name': e['name'],
                           'quantity': e['quantity'],
-                          'notes': e['notes']
+                          'notes': e['notes'],
+                          'owner': e['owner'],
+                          'image': e['image']
                         })
                     .toList();
 
@@ -49,6 +51,13 @@ class HomeScreen extends StatelessWidget {
                               'Quantity: ${thisItem['quantity']}',
                             )
                           ]),
+                          leading: Container(
+                            height: 80,
+                            width: 80,
+                            child: thisItem.containsKey('image')
+                                ? Image.network('${thisItem['image']}')
+                                : Container(),
+                          ),
                           onTap: () {
                             GoRouter.of(context)
                                 .go('/itemdetails', extra: thisItem['id']);

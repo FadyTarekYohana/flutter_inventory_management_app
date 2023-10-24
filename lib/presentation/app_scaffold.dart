@@ -1,11 +1,41 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:inventory_management_app/data/user_repository.dart';
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
   const AppScaffold({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
+
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  late dynamic user;
+
+  bool userLoaded = false;
+
+  loadData() async {
+    try {
+      user = await getUser();
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      if (user != null) {
+        userLoaded = true;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +54,26 @@ class AppScaffold extends StatelessWidget {
                   title: const Text("Cart"),
                   onTap: () => context.go("/cart"),
                 ),
-                ListTile(
-                  title: const Text("My Items"),
-                  onTap: () => context.go("/myitems"),
+                Visibility(
+                  visible: FirebaseAuth.instance.currentUser != null,
+                  child: ListTile(
+                    title: const Text("My Items"),
+                    onTap: () => context.go("/myitems"),
+                  ),
                 ),
-                ListTile(
-                  title: const Text("Users"),
-                  onTap: () => context.go("/users"),
+                Visibility(
+                  visible: userLoaded ? user['type'] == 'admin' : false,
+                  child: ListTile(
+                    title: const Text("Users"),
+                    onTap: () => context.go("/users"),
+                  ),
+                ),
+                Visibility(
+                  visible: userLoaded ? user['type'] == 'admin' : false,
+                  child: ListTile(
+                    title: const Text("reservations"),
+                    onTap: () => context.go("/reservations"),
+                  ),
                 ),
                 Visibility(
                   replacement: ListTile(
@@ -55,7 +98,7 @@ class AppScaffold extends StatelessWidget {
               "hello ${FirebaseAuth.instance.currentUser?.phoneNumber ?? 'guest'}"),
         ),
         body: Center(
-          child: child,
+          child: widget.child,
         ));
   }
 }

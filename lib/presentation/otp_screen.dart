@@ -19,10 +19,8 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
-    // ignore: avoid_print
     print("initState");
     phoneAuth();
-    // serviceAuth.phoneAuth(widget.phoneNumber, verifId!);
     startTimer();
 
     super.initState();
@@ -32,7 +30,6 @@ class _OtpScreenState extends State<OtpScreen> {
   late Timer _timer;
   FirebaseAuth auth = FirebaseAuth.instance;
   String? verifId;
-  // ServiceAuth serviceAuth = ServiceAuth();
 
   void startTimer() {
     setState(() {
@@ -40,7 +37,6 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      // ignore: avoid_print
       print(timer.tick);
 
       if (!mounted || counter == 0) {
@@ -59,8 +55,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: avoid_print
-
     return AppScaffold(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -87,7 +81,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       if (counter == 0) {
                         startTimer();
                         phoneAuth();
-                        //   serviceAuth.phoneAuth(widget.phoneNumber, verifId!);
                       }
                     },
                     child: const Text("send again")),
@@ -105,29 +98,18 @@ class _OtpScreenState extends State<OtpScreen> {
           ElevatedButton(
               onPressed: () {
                 sentCode();
-                // serviceAuth.sentCode(verifId, correct);
+                c1.text = '';
+                c2.text = '';
+                c3.text = '';
+                c4.text = '';
+                c5.text = '';
+                c6.text = '';
               },
-              child: const Text("confirm", style: TextStyle(fontSize: 20))),
+              child: const Text("Confirm", style: TextStyle(fontSize: 20))),
         ],
       ),
     );
   }
-
-  @override
-  void dispose() {
-    // ignore: avoid_print
-    print("dispose");
-    c1.dispose();
-    c2.dispose();
-    c3.dispose();
-    c4.dispose();
-    c5.dispose();
-    c6.dispose();
-    _timer.cancel();
-    super.dispose();
-  }
-
-  // phoneAuth();
 
   void phoneAuth() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -135,7 +117,6 @@ class _OtpScreenState extends State<OtpScreen> {
       timeout: const Duration(seconds: 30),
       verificationCompleted: (PhoneAuthCredential credential) {},
       verificationFailed: (FirebaseAuthException e) {
-        // ignore: avoid_print
         print("ex");
       },
       codeSent: (String verificationId, int? resendToken) async {

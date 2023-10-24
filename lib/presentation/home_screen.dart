@@ -3,22 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../data/user_repository.dart';
+
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key}) {
+    CollectionReference _reference =
+        FirebaseFirestore.instance.collection('items');
     _stream = _reference.snapshots();
   }
 
-  CollectionReference _reference =
-      FirebaseFirestore.instance.collection('items');
-
   late Stream<QuerySnapshot> _stream;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late dynamic user;
+
+  bool userLoaded = false;
+
+  loadData() async {
+    try {
+      user = await getUser();
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      if (user != null) {
+        userLoaded = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       child: Stack(children: [
         StreamBuilder<QuerySnapshot>(
-            stream: _stream,
+            stream: widget._stream,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -68,15 +92,18 @@ class HomeScreen extends StatelessWidget {
               }
               return const Center(child: CircularProgressIndicator());
             }),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                GoRouter.of(context).go('/additem');
-              },
+        Visibility(
+          visible: userLoaded,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  GoRouter.of(context).go('/additem');
+                },
+              ),
             ),
           ),
         )

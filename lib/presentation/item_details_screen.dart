@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/data/user_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
+import 'package:inventory_management_app/util/user_preferences.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   ItemDetailsScreen({Key? key, required this.itemId}) : super(key: key) {
@@ -35,9 +36,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     setState(() {
       if (item != null) {
         itemLoaded = true;
-        quantity = [
-          for (var i = 1; i <= int.parse(item['quantity']); i++) i.toString()
-        ];
+        if (item['quantity'] == '0') {
+          quantity = ['0'];
+        } else {
+          quantity = [
+            for (var i = 1; i <= int.parse(item['quantity']); i++) i.toString()
+          ];
+        }
+
         dropDownValue = quantity[0];
       }
     });
@@ -96,7 +102,18 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      '${data['notes']}',
+                      'From: ${data['owner']}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Text(
+                    'Phone: ${data['owner_phone']}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      'Notes: ${data['notes']}',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -128,22 +145,22 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: quantity[0] == '0'
+                              ? null
+                              : () {
+                                  UserSimplePreferences.addItemToCart(
+                                      widget.itemId, dropDownValue);
+                                  const snackBar = SnackBar(
+                                    content: Text(
+                                        'Item added to cart successfully! '),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                },
                           child: const Text(
                             'Add To Cart',
+                            textAlign: TextAlign.center,
                           )),
-                    ),
-                    Visibility(
-                      visible: userLoaded ? user['type'] == 'admin' : false,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              widget._reference.delete();
-                              GoRouter.of(context).go('/');
-                            },
-                            child: const Text('Delete Item')),
-                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -154,6 +171,23 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           child: const Text('Go To Cart')),
                     )
                   ]),
+                  Visibility(
+                    visible: userLoaded ? user['type'] == 'admin' : false,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                widget._reference.delete();
+                                GoRouter.of(context).go('/');
+                              },
+                              child: const Text('Delete Item')),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             );

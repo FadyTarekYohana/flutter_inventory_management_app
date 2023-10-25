@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
@@ -35,6 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
         userLoaded = true;
       }
     });
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
   }
 
   @override
@@ -93,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return const Center(child: CircularProgressIndicator());
             }),
         Visibility(
-          visible: userLoaded,
+          visible: FirebaseAuth.instance.currentUser != null,
           child: Align(
             alignment: Alignment.bottomRight,
             child: Padding(

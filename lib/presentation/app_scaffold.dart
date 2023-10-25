@@ -55,25 +55,15 @@ class _AppScaffoldState extends State<AppScaffold> {
                   onTap: () => context.go("/cart"),
                 ),
                 Visibility(
-                  visible: FirebaseAuth.instance.currentUser != null,
-                  child: ListTile(
-                    title: const Text("My Items"),
-                    onTap: () => context.go("/myitems"),
-                  ),
-                ),
-                Visibility(
                   visible: userLoaded ? user['type'] == 'admin' : false,
                   child: ListTile(
                     title: const Text("Users"),
                     onTap: () => context.go("/users"),
                   ),
                 ),
-                Visibility(
-                  visible: userLoaded ? user['type'] == 'admin' : false,
-                  child: ListTile(
-                    title: const Text("reservations"),
-                    onTap: () => context.go("/reservations"),
-                  ),
+                ListTile(
+                  title: const Text("Reservations"),
+                  onTap: () => context.go("/reservations"),
                 ),
                 Visibility(
                   replacement: ListTile(
@@ -94,8 +84,7 @@ class _AppScaffoldState extends State<AppScaffold> {
           ),
         ),
         appBar: AppBar(
-          title: Text(
-              "hello ${FirebaseAuth.instance.currentUser?.phoneNumber ?? 'guest'}"),
+          title: Text(userLoaded ? "Hello ${user['name']}" : "Hello Guest"),
         ),
         body: Center(
           child: widget.child,

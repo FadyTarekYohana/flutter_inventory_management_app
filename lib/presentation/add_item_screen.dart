@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../data/user_repository.dart';
+
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
 
@@ -15,6 +17,29 @@ class AddItemScreen extends StatefulWidget {
 }
 
 class _AddItemScreenState extends State<AddItemScreen> {
+  late dynamic user;
+  bool userLoaded = false;
+
+  loadData() async {
+    try {
+      user = await getUser();
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      if (user != null) {
+        userLoaded = true;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
   GlobalKey<FormState> key = GlobalKey();
 
   TextEditingController nameController = TextEditingController();
@@ -93,6 +118,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   try {
                     await referenceImageToUpload.putFile(File(file.path));
                     imageUrl = await referenceImageToUpload.getDownloadURL();
+                    const snackBar = SnackBar(
+                      content: Text('Image uploaded successfully! '),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   } catch (e) {}
                 }
               },
@@ -118,7 +147,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     'quantity': itemQuantity,
                     'notes': itemNotes,
                     'image': imageUrl,
-                    'owner':
+                    'owner': userLoaded ? user['name'] : '',
+                    'owner_phone':
                         FirebaseAuth.instance.currentUser?.phoneNumber ?? ''
                   };
 

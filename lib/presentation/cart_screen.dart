@@ -31,6 +31,7 @@ class _CartScreenState extends State<CartScreen> {
       FirebaseFirestore.instance.collection('reservations');
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
+
   TextEditingController nameController = TextEditingController();
 
   Future<void> _selectStartDate(
@@ -43,6 +44,7 @@ class _CartScreenState extends State<CartScreen> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         startDate = picked;
+        if (startDate.compareTo(endDate) > 0) endDate = picked;
       });
     }
   }
@@ -51,8 +53,8 @@ class _CartScreenState extends State<CartScreen> {
       BuildContext context, DateTime selectedDate) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime.now(),
+        initialDate: endDate,
+        firstDate: startDate,
         lastDate: DateTime(9999));
     if (picked != null && picked != selectedDate) {
       setState(() {

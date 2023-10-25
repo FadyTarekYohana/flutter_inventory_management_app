@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<bool> checkIfDocExists(String collectionName, String docId) async {
@@ -6,6 +8,6 @@ Future<bool> checkIfDocExists(String collectionName, String docId) async {
     var doc = await collectionRef.doc(docId).get();
     return doc.exists;
   } catch (e) {
-    throw e;
+    rethrow;
   }
 }

@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ElevatedButton(
               onPressed: () async {
                 if (await checkIfDocExists('users', phoneController.text)) {
+                  // ignore: use_build_context_synchronously
                   GoRouter.of(context).go('/otp', extra: phoneController.text);
                 } else {}
               },

@@ -9,11 +9,12 @@ import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import '../data/reservation_repository.dart';
 import '../data/user_repository.dart';
 
+// ignore: must_be_immutable
 class ReservationDetailsScreen extends StatefulWidget {
   ReservationDetailsScreen({super.key, required this.itemId}) {
-    CollectionReference _itemsReference =
+    CollectionReference itemsReference =
         FirebaseFirestore.instance.collection('items');
-    _itemsStream = _itemsReference.snapshots();
+    _itemsStream = itemsReference.snapshots();
   }
   String itemId;
   late Stream<QuerySnapshot> _itemsStream;
@@ -33,7 +34,9 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
     try {
       reservation = await getReservation(widget.itemId);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     if (reservation != null) {
@@ -45,7 +48,9 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
     try {
       user = await getUser();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -68,16 +73,16 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
     return AppScaffold(
       child: Visibility(
         visible: reservationLoaded,
-        replacement: CircularProgressIndicator.adaptive(),
+        replacement: const CircularProgressIndicator.adaptive(),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
               reservationLoaded ? "Reserved by ${reservation['name']}" : '',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -125,7 +130,7 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
                                         'Quantity: ${reservationMap[thisItem['id']]}',
                                       )
                                     ]),
-                                    leading: Container(
+                                    leading: SizedBox(
                                       height: 80,
                                       width: 80,
                                       child: thisItem.containsKey('image')
@@ -137,6 +142,7 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
                                 );
                               }
                             }
+                            return null;
                           }),
                     );
                   }

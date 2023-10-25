@@ -18,12 +18,12 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     name: 'login',
     path: '/login',
-    builder: (context, state) => LoginScreen(),
+    builder: (context, state) => const LoginScreen(),
   ),
   GoRoute(
     name: 'additem',
     path: '/additem',
-    builder: (context, state) => AddItemScreen(),
+    builder: (context, state) => const AddItemScreen(),
   ),
   GoRoute(
     name: 'otp',

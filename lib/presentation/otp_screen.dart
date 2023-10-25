@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
@@ -8,8 +9,9 @@ import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import '../widgets/text_otp.dart';
 import '../widgets/textfield_otp.dart';
 
+// ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
-  OtpScreen({Key? key, required this.phoneNumber}) : super(key: key);
+  OtpScreen({super.key, required this.phoneNumber});
   String phoneNumber;
 
   @override
@@ -19,7 +21,9 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
-    print("initState");
+    if (kDebugMode) {
+      print("initState");
+    }
     phoneAuth();
     startTimer();
 
@@ -27,6 +31,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   int counter = 60;
+  // ignore: unused_field
   late Timer _timer;
   FirebaseAuth auth = FirebaseAuth.instance;
   String? verifId;
@@ -37,7 +42,9 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print(timer.tick);
+      if (kDebugMode) {
+        print(timer.tick);
+      }
 
       if (!mounted || counter == 0) {
         timer.cancel();
@@ -117,7 +124,9 @@ class _OtpScreenState extends State<OtpScreen> {
       timeout: const Duration(seconds: 30),
       verificationCompleted: (PhoneAuthCredential credential) {},
       verificationFailed: (FirebaseAuthException e) {
-        print("ex");
+        if (kDebugMode) {
+          print("ex");
+        }
       },
       codeSent: (String verificationId, int? resendToken) async {
         verifId = verificationId;

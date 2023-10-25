@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
+// ignore: must_be_immutable
 class ReservationsScreen extends StatefulWidget {
   ReservationsScreen({super.key}) {
-    CollectionReference _reference =
+    CollectionReference reference =
         FirebaseFirestore.instance.collection('reservations');
-    _stream = _reference.snapshots();
+    _stream = reference.snapshots();
   }
   late Stream<QuerySnapshot> _stream;
   @override

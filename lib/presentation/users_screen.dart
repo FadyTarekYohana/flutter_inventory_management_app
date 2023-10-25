@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+// ignore: must_be_immutable
 class UsersScreen extends StatelessWidget {
   UsersScreen({super.key}) {
     _stream = _reference.snapshots();
   }
 
-  CollectionReference _reference =
+  final CollectionReference _reference =
       FirebaseFirestore.instance.collection('users');
 
   TextEditingController phoneController = TextEditingController(text: "+20");
@@ -49,7 +51,7 @@ class UsersScreen extends StatelessWidget {
                         itemBuilder: (BuildContext context, int index) {
                           Map thisItem = items[index];
 
-                          return Container(
+                          return SizedBox(
                             height: MediaQuery.of(context).size.height / 12,
                             child: Card(
                               child: ListTile(
@@ -57,9 +59,9 @@ class UsersScreen extends StatelessWidget {
                                 subtitle: Text(thisItem['phone']),
                                 trailing: Visibility(
                                   visible: thisItem['type'] != 'admin',
-                                  replacement: Text("Admin"),
+                                  replacement: const Text("Admin"),
                                   child: IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       _reference.doc(thisItem['id']).delete();
                                     },
@@ -85,9 +87,9 @@ class UsersScreen extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                 child: TextField(
                   controller: nameController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 12.0),
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                     border: InputBorder.none,
                     hintText: 'Name',
                     label: Text('Enter Name'),
@@ -107,9 +109,9 @@ class UsersScreen extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                 child: TextField(
                   controller: phoneController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 12.0),
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                     border: InputBorder.none,
                     hintText: 'Phone Number',
                     label: Text('Enter phone number with country code'),
@@ -129,14 +131,17 @@ class UsersScreen extends StatelessWidget {
                 inactiveBgColor: Colors.blueGrey[50],
                 initialLabelIndex: 0,
                 totalSwitches: 2,
-                labels: ['User', 'Admin'],
+                labels: const ['User', 'Admin'],
                 onToggle: (index) {
-                  if (index == 0)
+                  if (index == 0) {
                     userType = 'user';
-                  else
+                  } else {
                     userType = 'admin';
+                  }
 
-                  print('switched to: $index');
+                  if (kDebugMode) {
+                    print('switched to: $index');
+                  }
                 },
               ),
             ),
@@ -150,8 +155,9 @@ class UsersScreen extends StatelessWidget {
                   const EdgeInsets.only(left: 8, right: 8, bottom: 15, top: 8),
               child: ElevatedButton.icon(
                 style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                    shape:
+                        MaterialStateProperty.all(const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ))),
                 onPressed: () async {
                   if (phoneController.text.isNotEmpty &&
@@ -172,7 +178,11 @@ class UsersScreen extends StatelessWidget {
                             .set(dataToSend);
                         phoneController.text = '';
                         nameController.text = '';
-                      } catch (e) {}
+                      } catch (e) {
+                        if (kDebugMode) {
+                          print(e);
+                        }
+                      }
                     }
                   }
                 },

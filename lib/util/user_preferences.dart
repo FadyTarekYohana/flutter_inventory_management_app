@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSimplePreferences {
@@ -18,21 +19,27 @@ class UserSimplePreferences {
   static Future addItemToCart(String itemId, String quantity) async {
     cart[itemId] = quantity;
     String encodedMap = json.encode(cart);
-    print(encodedMap);
+    if (kDebugMode) {
+      print(encodedMap);
+    }
     await _preferences!.setString(_keyCart, encodedMap);
   }
 
   static removeItemFromCard(String itemId) async {
     cart.remove(itemId);
     String encodedMap = json.encode(cart);
-    print(encodedMap);
+    if (kDebugMode) {
+      print(encodedMap);
+    }
     await _preferences!.setString(_keyCart, encodedMap);
   }
 
   static Map<String, String> getCart() {
     String encodedMap = _preferences!.getString(_keyCart) ?? '';
     Map<String, String> decodedMap = json.decode(encodedMap);
-    print(decodedMap);
+    if (kDebugMode) {
+      print(decodedMap);
+    }
     return decodedMap;
   }
 

@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/user_repository.dart';
 
 class AppScaffold extends StatefulWidget {
-  const AppScaffold({Key? key, required this.child}) : super(key: key);
+  const AppScaffold({super.key, required this.child});
 
   final Widget child;
 
@@ -21,7 +22,9 @@ class _AppScaffoldState extends State<AppScaffold> {
     try {
       user = await getUser();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -75,6 +78,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                     title: const Text("Logout"),
                     onTap: () async {
                       await FirebaseAuth.instance.signOut();
+                      // ignore: use_build_context_synchronously
                       context.go("/");
                     },
                   ),

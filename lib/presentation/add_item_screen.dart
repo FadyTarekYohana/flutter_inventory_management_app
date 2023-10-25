@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
@@ -24,7 +25,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
     try {
       user = await getUser();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -46,7 +49,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController notesController = TextEditingController();
 
-  CollectionReference _reference =
+  final CollectionReference _reference =
       FirebaseFirestore.instance.collection('items');
 
   String imageUrl = '';
@@ -121,8 +124,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     const snackBar = SnackBar(
                       content: Text('Image uploaded successfully! '),
                     );
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  } catch (e) {}
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
                 }
               },
               icon: const Icon(Icons.image),
@@ -133,7 +141,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
               onPressed: () async {
                 if (imageUrl.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please upload an image')));
+                      const SnackBar(content: Text('Please upload an image')));
 
                   return;
                 }
@@ -155,7 +163,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   try {
                     _reference.add(dataToSend);
                     GoRouter.of(context).go('/');
-                  } catch (e) {}
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
                 }
               },
               child: const Text('Submit'))

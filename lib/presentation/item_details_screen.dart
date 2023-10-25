@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/item_repository.dart';
@@ -6,8 +7,9 @@ import 'package:inventory_management_app/data/user_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:inventory_management_app/util/user_preferences.dart';
 
+// ignore: must_be_immutable
 class ItemDetailsScreen extends StatefulWidget {
-  ItemDetailsScreen({Key? key, required this.itemId}) : super(key: key) {
+  ItemDetailsScreen({super.key, required this.itemId}) {
     _reference = FirebaseFirestore.instance.collection('items').doc(itemId);
     _futureData = _reference.get();
   }
@@ -27,7 +29,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
 
   bool userLoaded = false;
   bool itemLoaded = false;
+  // ignore: prefer_typing_uninitialized_variables
   var quantity;
+  // ignore: prefer_typing_uninitialized_variables
   var dropDownValue;
 
   loadData() async {
@@ -51,7 +55,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     try {
       user = await getUser();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -84,7 +90,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                     height: MediaQuery.of(context).size.height / 3,
                     width: MediaQuery.of(context).size.width,
                     child: data.containsKey('image')
@@ -95,26 +101,26 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       '${data['name']}',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       'From: ${data['owner']}',
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                   Text(
                     'Phone: ${data['owner_phone']}',
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       'Notes: ${data['notes']}',
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                   Row(

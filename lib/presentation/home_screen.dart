@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
 import '../data/user_repository.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key}) {
-    CollectionReference _reference =
+    CollectionReference reference =
         FirebaseFirestore.instance.collection('items');
-    _stream = _reference.snapshots();
+    _stream = reference.snapshots();
   }
 
   late Stream<QuerySnapshot> _stream;
@@ -28,7 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       user = await getUser();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -82,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Quantity: ${thisItem['quantity']}',
                             )
                           ]),
-                          leading: Container(
+                          leading: SizedBox(
                             height: 80,
                             width: 80,
                             child: thisItem.containsKey('image')

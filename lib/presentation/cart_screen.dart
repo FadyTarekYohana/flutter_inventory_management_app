@@ -2,14 +2,15 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:inventory_management_app/util/user_preferences.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+// ignore: must_be_immutable
 class CartScreen extends StatefulWidget {
   CartScreen({super.key}) {
     _reference = FirebaseFirestore.instance.collection('items');
@@ -115,7 +116,7 @@ class _CartScreenState extends State<CartScreen> {
                                       'Quantity: ${UserSimplePreferences.cart[thisItem['id']]}',
                                     )
                                   ]),
-                                  leading: Container(
+                                  leading: SizedBox(
                                     height: 80,
                                     width: 80,
                                     child: thisItem.containsKey('image')
@@ -238,7 +239,9 @@ class _CartScreenState extends State<CartScreen> {
                               .update({'quantity': newQuantity.toString()});
                         });
                         _reservations.add(dataToSend);
-                        print('boom');
+                        if (kDebugMode) {
+                          print('boom');
+                        }
                         UserSimplePreferences.cart = {};
                         nameController.text = '';
                         UserSimplePreferences.setInStock(false);
@@ -248,18 +251,22 @@ class _CartScreenState extends State<CartScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         GoRouter.of(context).go('/');
                       } else {
-                        print('oo oh');
+                        if (kDebugMode) {
+                          print('oo oh');
+                        }
                         UserSimplePreferences.cart = {};
                         nameController.text = '';
                         GoRouter.of(context).go('/');
                       }
                     } catch (e) {
-                      print(e);
+                      if (kDebugMode) {
+                        print(e);
+                      }
                       GoRouter.of(context).go('/');
                     }
                   }
                 },
-                child: Text("Reserve")),
+                child: const Text("Reserve")),
           )
         ],
       ),

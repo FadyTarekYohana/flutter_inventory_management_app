@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
 import '../data/reservation_repository.dart';
@@ -12,12 +13,15 @@ import '../data/user_repository.dart';
 // ignore: must_be_immutable
 class ReservationDetailsScreen extends StatefulWidget {
   ReservationDetailsScreen({super.key, required this.itemId}) {
-    CollectionReference itemsReference =
-        FirebaseFirestore.instance.collection('items');
-    _itemsStream = itemsReference.snapshots();
+    _reservationReference =
+        FirebaseFirestore.instance.collection('reservations');
+    _itemsReference = FirebaseFirestore.instance.collection('items');
+    _itemsStream = _itemsReference.snapshots();
   }
   String itemId;
   late Stream<QuerySnapshot> _itemsStream;
+  late CollectionReference _reservationReference;
+  late CollectionReference _itemsReference;
 
   @override
   State<ReservationDetailsScreen> createState() =>
@@ -154,10 +158,16 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                     onPressed: () {
-                      FirebaseFirestore.instance
-                          .collection('reservations')
-                          .doc(widget.itemId)
-                          .delete();
+                      var reservationMap = json.decode(reservation['items']);
+                      reservationMap.forEach((key, value) async {
+                        var item = await getItem(key);
+                        var newQuantity =
+                            int.parse(value) + int.parse(item['quantity']);
+                        widget._itemsReference
+                            .doc(key)
+                            .update({"quantity": newQuantity.toString()});
+                      });
+                      widget._reservationReference.doc(widget.itemId).delete();
                       GoRouter.of(context).go('/');
                     },
                     child: const Text("Delete Reservation")),

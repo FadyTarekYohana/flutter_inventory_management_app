@@ -46,44 +46,44 @@ class _AppScaffoldState extends State<AppScaffold> {
         drawer: Drawer(
           child: SafeArea(
             top: true,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  title: const Text("Home"),
-                  onTap: () => context.go("/"),
-                ),
-                ListTile(
-                  title: const Text("Cart"),
-                  onTap: () => context.go("/cart"),
-                ),
-                Visibility(
-                  visible: userLoaded ? user['type'] == 'admin' : false,
-                  child: ListTile(
-                    title: const Text("Users"),
-                    onTap: () => context.go("/users"),
+            child: Visibility(
+              replacement: ListTile(
+                title: const Text("Login"),
+                onTap: () => context.go("/login"),
+              ),
+              visible: FirebaseAuth.instance.currentUser != null,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ListTile(
+                    title: const Text("Home"),
+                    onTap: () => context.go("/"),
                   ),
-                ),
-                ListTile(
-                  title: const Text("Reservations"),
-                  onTap: () => context.go("/reservations"),
-                ),
-                Visibility(
-                  replacement: ListTile(
-                    title: const Text("Login"),
-                    onTap: () => context.go("/login"),
+                  ListTile(
+                    title: const Text("Cart"),
+                    onTap: () => context.go("/cart"),
                   ),
-                  visible: FirebaseAuth.instance.currentUser != null,
-                  child: ListTile(
+                  Visibility(
+                    visible: userLoaded ? user['type'] == 'admin' : false,
+                    child: ListTile(
+                      title: const Text("Users"),
+                      onTap: () => context.go("/users"),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text("Reservations"),
+                    onTap: () => context.go("/reservations"),
+                  ),
+                  ListTile(
                     title: const Text("Logout"),
                     onTap: () async {
                       await FirebaseAuth.instance.signOut();
                       // ignore: use_build_context_synchronously
-                      context.go("/");
+                      context.go("/login");
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

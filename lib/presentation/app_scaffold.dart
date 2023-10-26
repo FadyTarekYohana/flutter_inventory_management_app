@@ -3,6 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/user_repository.dart';
+import 'package:inventory_management_app/presentation/cart_screen.dart';
+import 'package:inventory_management_app/presentation/home_screen.dart';
+import 'package:inventory_management_app/presentation/login_screen.dart';
+import 'package:inventory_management_app/presentation/reservations_screen.dart';
+import 'package:inventory_management_app/presentation/users_screen.dart';
 
 class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key, required this.child});
@@ -49,38 +54,61 @@ class _AppScaffoldState extends State<AppScaffold> {
             top: true,
             child: Visibility(
               replacement: ListTile(
-                title: const Text("Login"),
-                onTap: () => context.go("/login"),
-              ),
+                  title: const Text("Login"),
+                  onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      )),
               visible: FirebaseAuth.instance.currentUser != null,
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
                   ListTile(
                     title: const Text("Home"),
-                    onTap: () => context.go("/"),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                      ),
+                    ),
                   ),
                   ListTile(
                     title: const Text("Cart"),
-                    onTap: () => context.go("/cart"),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CartScreen(),
+                      ),
+                    ),
                   ),
                   Visibility(
                     visible: userLoaded ? user['type'] == 'admin' : false,
                     child: ListTile(
                       title: const Text("Users"),
-                      onTap: () => context.go("/users"),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UsersScreen(),
+                        ),
+                      ),
                     ),
                   ),
                   ListTile(
                     title: const Text("Reservations"),
-                    onTap: () => context.go("/reservations"),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ReservationsScreen(),
+                      ),
+                    ),
                   ),
                   ListTile(
                     title: const Text("Logout"),
                     onTap: () async {
                       await FirebaseAuth.instance.signOut();
                       // ignore: use_build_context_synchronously
-                      context.go("/login");
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
                     },
                   ),
                 ],

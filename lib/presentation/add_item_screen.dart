@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:inventory_management_app/presentation/home_screen.dart';
 
 import '../data/user_repository.dart';
 
@@ -156,7 +157,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       };
 
                       _reference.add(dataToSend);
-                      GoRouter.of(context).go('/');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
                     } catch (e) {
                       const snackBar = SnackBar(
                         content: Text('Some problem occurred!'),

@@ -8,6 +8,7 @@ import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
 import '../widgets/text_otp.dart';
 import '../widgets/textfield_otp.dart';
+import 'home_screen.dart';
 
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
@@ -147,7 +148,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
       await auth.signInWithCredential(credential).then((value) {
         if (value.user != null && correct) {
-          GoRouter.of(context).go('/');
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ),
+          );
         }
       });
     } catch (ex) {

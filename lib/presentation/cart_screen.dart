@@ -10,6 +10,8 @@ import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:inventory_management_app/util/user_preferences.dart';
 
+import 'home_screen.dart';
+
 // ignore: must_be_immutable
 class CartScreen extends StatefulWidget {
   CartScreen({super.key}) {
@@ -251,20 +253,32 @@ class _CartScreenState extends State<CartScreen> {
                           content: Text('Reservation made successfully! '),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        GoRouter.of(context).go('/');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
                       } else {
                         if (kDebugMode) {
                           print('oo oh');
                         }
                         UserSimplePreferences.cart = {};
                         nameController.text = '';
-                        GoRouter.of(context).go('/');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
                       }
                     } catch (e) {
                       if (kDebugMode) {
                         print(e);
                       }
-                      GoRouter.of(context).go('/');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
                     }
                   }
                 },

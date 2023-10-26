@@ -9,6 +9,7 @@ import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
 import '../data/reservation_repository.dart';
 import '../data/user_repository.dart';
+import 'home_screen.dart';
 
 // ignore: must_be_immutable
 class ReservationDetailsScreen extends StatefulWidget {
@@ -168,7 +169,11 @@ class _ReservationDetailsScreenState extends State<ReservationDetailsScreen> {
                             .update({"quantity": newQuantity.toString()});
                       });
                       widget._reservationReference.doc(widget.itemId).delete();
-                      GoRouter.of(context).go('/');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
                     },
                     child: const Text("Delete Reservation")),
               ),

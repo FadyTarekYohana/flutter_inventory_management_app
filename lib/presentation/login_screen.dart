@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
+import 'package:inventory_management_app/presentation/otp_screen.dart';
 import 'package:inventory_management_app/util/dbTools.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,7 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 if (await checkIfDocExists('users', phoneController.text)) {
                   // ignore: use_build_context_synchronously
-                  GoRouter.of(context).go('/otp', extra: phoneController.text);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => OtpScreen(
+                        phoneNumber: 'phoneController.text',
+                      ),
+                    ),
+                  );
                 } else {}
               },
               child: const Text("Login")),

@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:inventory_management_app/presentation/add_item_screen.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
+import 'package:inventory_management_app/presentation/item_details_screen.dart';
 
 import '../data/user_repository.dart';
 
@@ -94,8 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : Container(),
                           ),
                           onTap: () {
-                            GoRouter.of(context)
-                                .go('/itemdetails', extra: thisItem['id']);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ItemDetailsScreen(
+                                  itemId: thisItem['id'],
+                                ),
+                              ),
+                            );
                           },
                         ),
                       );
@@ -112,7 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FloatingActionButton(
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  GoRouter.of(context).go('/additem');
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const AddItemScreen(),
+                    ),
+                  );
                 },
               ),
             ),

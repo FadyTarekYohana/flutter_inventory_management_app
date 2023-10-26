@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/data/user_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
+import 'package:inventory_management_app/presentation/cart_screen.dart';
+import 'package:inventory_management_app/presentation/home_screen.dart';
 import 'package:inventory_management_app/util/user_preferences.dart';
 
 // ignore: must_be_immutable
@@ -173,7 +175,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                           onPressed: () {
-                            GoRouter.of(context).go('/cart');
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CartScreen(),
+                              ),
+                            );
                           },
                           child: const Text('Go To Cart')),
                     )
@@ -194,7 +200,11 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                     .delete();
                                 widget._reference.delete();
 
-                                GoRouter.of(context).go('/');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ),
+                                );
                               },
                               child: const Text('Delete Item')),
                         ),

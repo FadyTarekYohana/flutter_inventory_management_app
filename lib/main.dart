@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_management_app/firebase_options.dart';
 import 'package:inventory_management_app/routes.dart';
@@ -9,6 +10,7 @@ Future<void> main() async {
   await UserSimplePreferences.init();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   runApp(const MyApp());
 }
 

@@ -52,6 +52,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
   final CollectionReference _reference =
       FirebaseFirestore.instance.collection('items');
 
+  List<File> selectedImages = [];
+  final picker = ImagePicker();
+
   String imageUrl = '';
 
   @override
@@ -61,6 +64,13 @@ class _AddItemScreenState extends State<AddItemScreen> {
       key: key,
       child: Column(
         children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
+            width: MediaQuery.of(context).size.width / 4,
+            child: selectedImages.isEmpty
+                ? Image.asset('assets/images/placeholder.jpg')
+                : Image.file(File(selectedImages[0].path)),
+          ),
           Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
@@ -103,35 +113,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton.icon(
               onPressed: () async {
-                if (key.currentState!.validate()) {
-                  ImagePicker imagePicker = ImagePicker();
-                  XFile? file =
-                      await imagePicker.pickImage(source: ImageSource.gallery);
-
-                  if (file == null) return;
-
-                  String uniqueFileName =
-                      DateTime.now().millisecondsSinceEpoch.toString();
-
-                  Reference referenceRoot = FirebaseStorage.instance.ref();
-                  Reference referenceDirImages = referenceRoot.child('images');
-                  Reference referenceImageToUpload =
-                      referenceDirImages.child(uniqueFileName);
-
-                  try {
-                    await referenceImageToUpload.putFile(File(file.path));
-                    imageUrl = await referenceImageToUpload.getDownloadURL();
-                    const snackBar = SnackBar(
-                      content: Text('Image uploaded successfully! '),
-                    );
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  } catch (e) {
-                    if (kDebugMode) {
-                      print(e);
-                    }
-                  }
-                }
+                getImages();
               },
               icon: const Icon(Icons.image),
               label: const Text("Add Image"),
@@ -139,34 +121,56 @@ class _AddItemScreenState extends State<AddItemScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                if (imageUrl.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please upload an image')));
-
-                  return;
-                }
                 if (key.currentState!.validate()) {
-                  String itemName = nameController.text;
-                  String itemQuantity = quantityController.text;
-                  String itemNotes = notesController.text;
+                  if (selectedImages.isNotEmpty) {
+                    const snackBar = SnackBar(
+                      content: Text('Adding the item...'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    String uniqueFileName =
+                        DateTime.now().millisecondsSinceEpoch.toString();
 
-                  Map<String, String> dataToSend = {
-                    'name': itemName,
-                    'quantity': itemQuantity,
-                    'notes': itemNotes,
-                    'image': imageUrl,
-                    'owner': userLoaded ? user['name'] : '',
-                    'owner_phone':
-                        FirebaseAuth.instance.currentUser?.phoneNumber ?? ''
-                  };
+                    Reference referenceRoot = FirebaseStorage.instance.ref();
+                    Reference referenceDirImages =
+                        referenceRoot.child('images');
+                    Reference referenceImageToUpload =
+                        referenceDirImages.child(uniqueFileName);
 
-                  try {
-                    _reference.add(dataToSend);
-                    GoRouter.of(context).go('/');
-                  } catch (e) {
-                    if (kDebugMode) {
-                      print(e);
+                    String itemName = nameController.text;
+                    String itemQuantity = quantityController.text;
+                    String itemNotes = notesController.text;
+
+                    try {
+                      await referenceImageToUpload
+                          .putFile(File(selectedImages[0].path));
+                      imageUrl = await referenceImageToUpload.getDownloadURL();
+                      Map<String, String> dataToSend = {
+                        'name': itemName,
+                        'quantity': itemQuantity,
+                        'notes': itemNotes,
+                        'image': imageUrl,
+                        'image_id': uniqueFileName,
+                        'owner': userLoaded ? user['name'] : '',
+                        'owner_phone':
+                            FirebaseAuth.instance.currentUser?.phoneNumber ?? ''
+                      };
+
+                      _reference.add(dataToSend);
+                      GoRouter.of(context).go('/');
+                    } catch (e) {
+                      const snackBar = SnackBar(
+                        content: Text('Some problem occurred!'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      if (kDebugMode) {
+                        print(e);
+                      }
                     }
+                  } else {
+                    const snackBar = SnackBar(
+                      content: Text('Please add an image!'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 }
               },
@@ -174,5 +178,23 @@ class _AddItemScreenState extends State<AddItemScreen> {
         ],
       ),
     ));
+  }
+
+  Future getImages() async {
+    final pickedFile = await picker.pickImage(
+        requestFullMetadata: true,
+        imageQuality: 100,
+        maxHeight: 1000,
+        maxWidth: 1000,
+        source: ImageSource.gallery);
+    XFile? xfilePick = pickedFile;
+
+    var pickedFiles = [xfilePick];
+
+    setState(
+      () {
+        selectedImages.insert(0, File(pickedFiles[0]!.path));
+      },
+    );
   }
 }

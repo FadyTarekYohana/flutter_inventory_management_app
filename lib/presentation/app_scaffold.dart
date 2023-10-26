@@ -43,6 +43,7 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         drawer: Drawer(
           child: SafeArea(
             top: true,

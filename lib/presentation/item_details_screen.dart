@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -185,8 +186,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                           child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                Reference storage =
+                                    FirebaseStorage.instance.ref();
+                                await storage
+                                    .child('images/${item['image_id']}')
+                                    .delete();
                                 widget._reference.delete();
+
                                 GoRouter.of(context).go('/');
                               },
                               child: const Text('Delete Item')),

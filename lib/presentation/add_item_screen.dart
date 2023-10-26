@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inventory_management_app/presentation/home_screen.dart';
@@ -157,6 +156,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       };
 
                       _reference.add(dataToSend);
+                      // ignore: use_build_context_synchronously
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => HomeScreen(),

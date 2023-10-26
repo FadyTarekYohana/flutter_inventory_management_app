@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:inventory_management_app/presentation/reservation_details_screen.dart';
 

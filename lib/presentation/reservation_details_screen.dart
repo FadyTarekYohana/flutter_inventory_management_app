@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/item_repository.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 

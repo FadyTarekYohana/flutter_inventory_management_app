@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 import 'package:inventory_management_app/presentation/otp_screen.dart';
 import 'package:inventory_management_app/util/dbTools.dart';

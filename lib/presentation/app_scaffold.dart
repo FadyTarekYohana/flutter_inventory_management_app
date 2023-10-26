@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/data/user_repository.dart';
 import 'package:inventory_management_app/presentation/cart_screen.dart';
 import 'package:inventory_management_app/presentation/home_screen.dart';
@@ -103,11 +104,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                     onTap: () async {
                       await FirebaseAuth.instance.signOut();
                       // ignore: use_build_context_synchronously
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
+                      GoRouter.of(context).go('/login');
                     },
                   ),
                 ],

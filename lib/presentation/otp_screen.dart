@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:inventory_management_app/presentation/app_scaffold.dart';
 
 import '../widgets/text_otp.dart';
 import '../widgets/textfield_otp.dart';
-import 'home_screen.dart';
 
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
@@ -42,10 +42,6 @@ class _OtpScreenState extends State<OtpScreen> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (kDebugMode) {
-        print(timer.tick);
-      }
-
       if (!mounted || counter == 0) {
         timer.cancel();
       } else {
@@ -147,11 +143,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
       await auth.signInWithCredential(credential).then((value) {
         if (value.user != null && correct) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(),
-            ),
-          );
+          GoRouter.of(context).go('/');
         }
       });
     } catch (ex) {
